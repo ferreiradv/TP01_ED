@@ -15,7 +15,7 @@ public:
     // O construtor deve receber apenas ID e W. Ele aloca o array internamente.
     Acao(int id, int w);
     
-    // Destrutor essencial para liberar o array historicoPrecos [cite: 257]
+    // Destrutor essencial para liberar o array historicoPrecos
     ~Acao();
 
     // Getters
