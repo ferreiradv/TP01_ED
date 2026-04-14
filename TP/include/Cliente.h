@@ -1,11 +1,11 @@
 #ifndef CLIENTE_H
 #define CLIENTE_H
 
+#include "array_dinamico.h"
+
 struct Cliente {
     int id;
-    int* carteira;
-    int tamanho;
-    int capacidade;
+    ArrayDinamico* carteira;
 };
 
 Cliente* criarCliente(int id);
