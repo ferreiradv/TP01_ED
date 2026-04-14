@@ -1,20 +1,15 @@
-#ifndef CLIENTE_HPP
-#define CLIENTE_HPP
+#ifndef CLIENTE_H
+#define CLIENTE_H
 
-#include <string>
-
-using namespace std;
-
-
-class Cliente{
-private:
-int id;
-ListaAcoes* carteira;// estrutura de dados a ser implementada para armazenar as ações do cliente
-
-public:
-void comprarAcao(Acao* acao);//adiciona ponteiro da açao a carteira
-void venderAcao(Acao* acao);//remove ponteiro da açao da carteira
-ListaAcoes* getCarteira();//retorna a carteira do cliente
+struct Cliente {
+    int id;
+    int* carteira;
+    int tamanho;
+    int capacidade;
 };
 
-#endif;
+Cliente* criarCliente(int id);
+void comprarAcao(Cliente* c, int acao);
+void venderAcao(Cliente* c, int acao);
+
+#endif

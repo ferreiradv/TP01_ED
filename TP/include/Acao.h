@@ -1,9 +1,8 @@
-#ifndef ACAO_HPP
+    #ifndef ACAO_HPP
 #define ACAO_HPP
 
 #include <string>
 
-// Usar std:: explicitamente é preferível em headers para evitar poluição de nomes
 class Acao {
 private:
     int id;
@@ -24,9 +23,9 @@ public:
     int getW() const;
 
     // Métodos de negócio
-    void adicionarPreco(double preco); // Adiciona e gerencia o buffer circular [cite: 71, 177]
+    void adicionarPreco(double preco); 
     
-    // Métodos de cálculo conforme as fórmulas do PDF [cite: 22, 47]
+    
     double calcularRET() const;
     double calcularAVGRET() const;
     double calcularSTAB() const;
@@ -35,7 +34,6 @@ public:
     // Retorna a métrica pedida (útil para a estratégia sob demanda)
     double getMetricValue(std::string metrica) const;
 
-    // DICA: Para o desempate exigido no PDF, ter o ID acessível é vital [cite: 54, 94]
 };
 
 #endif
