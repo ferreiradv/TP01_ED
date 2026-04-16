@@ -34,13 +34,12 @@ void Acao::adicionarPreco(double preco) {
         countPrecos++;
     }
 }
-
 double Acao::calcularRET() const {
 
-    if(countPrecos < w) return 0;
+    if(countPrecos < 2) return 0;
 
     int primeiro = indexAtual;
-    int ultimo = (indexAtual + w - 1) % w;
+    int ultimo = (indexAtual - 1 + w) % w;
 
     double p0 = historicoPrecos[primeiro];
     double pw = historicoPrecos[ultimo];
@@ -81,12 +80,12 @@ double Acao::calcularSTAB() const {
 
         double ri = (historicoPrecos[atual] / historicoPrecos[anterior]) - 1;
 
-        soma += (ri - media) * (ri - media);
+        soma += (ri - media) * (ri - media);//função calcula a variancia das ações
     }
 
-    double vol = sqrt(soma / (w - 1));
+    double vol = sqrt(soma / (w - 1));//depois tira a raiz, obtendo assim o desvio padrão
 
-    return 1.0 / (1.0 + vol);
+    return 1.0 / (1.0 + vol);//transforma o desvio padrão numa porcentagem
 }
 
 double Acao::calcularCONS() const {

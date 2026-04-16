@@ -1,11 +1,10 @@
-//usar como base as funções da açao para criar as funções do array dinamico
 #include "array_dinamico.h"
 
 ArrayDinamico* criarDinamico(int capacidade) {
     ArrayDinamico* arr = new ArrayDinamico;
     
     
-    arr->capacidade = 10;
+    arr->capacidade = capacidade;
     arr->tamanho = 0;
     arr->dados = new int[arr->capacidade];
 
