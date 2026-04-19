@@ -36,7 +36,7 @@ void Acao::adicionarPreco(double preco) {
 }
 double Acao::calcularRET() const {
 
-    if(countPrecos < 2) return 0;
+    if(countPrecos < w) return 0;
 
     int primeiro = (countPrecos < w) ? 0 : indexAtual;
     int ultimo = (indexAtual - 1 + w) % w;
@@ -53,10 +53,12 @@ double Acao::calcularAVGRET() const {
 
     double soma = 0;
 
+    int inicio = (countPrecos < w) ? 0 : indexAtual;
+
     for(int i = 1; i < w; i++) {
 
-        int atual = (indexAtual + i) % w;
-        int anterior = (indexAtual + i - 1) % w;
+        int atual = (inicio + i) % w;
+        int anterior = (inicio + i - 1) % w;
 
         double ri = (historicoPrecos[atual] / historicoPrecos[anterior]) - 1;
 
@@ -73,19 +75,21 @@ double Acao::calcularSTAB() const {
     double media = calcularAVGRET();
     double soma = 0;
 
+    int inicio = (countPrecos < w) ? 0 : indexAtual;
+
     for(int i = 1; i < w; i++) {
 
-        int atual = (indexAtual + i) % w;
-        int anterior = (indexAtual + i - 1) % w;
+        int atual = (inicio + i) % w;
+        int anterior = (inicio + i - 1) % w;
 
         double ri = (historicoPrecos[atual] / historicoPrecos[anterior]) - 1;
 
-        soma += (ri - media) * (ri - media);//função calcula a variancia das ações
+        soma += (ri - media) * (ri - media);
     }
 
-    double vol = sqrt(soma / (w - 1));//depois tira a raiz, obtendo assim o desvio padrão
+    double vol = sqrt(soma / (w - 1));
 
-    return 1.0 / (1.0 + vol);//transforma o desvio padrão numa porcentagem
+    return 1.0 / (1.0 + vol);
 }
 
 double Acao::calcularCONS() const {
@@ -94,10 +98,12 @@ double Acao::calcularCONS() const {
 
     int positivos = 0;
 
+    int inicio = (countPrecos < w) ? 0 : indexAtual;
+
     for(int i = 1; i < w; i++) {
 
-        int atual = (indexAtual + i) % w;
-        int anterior = (indexAtual + i - 1) % w;
+        int atual = (inicio + i) % w;
+        int anterior = (inicio + i - 1) % w;
 
         double ri = (historicoPrecos[atual] / historicoPrecos[anterior]) - 1;
 
