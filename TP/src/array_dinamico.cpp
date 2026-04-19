@@ -1,4 +1,4 @@
-#include "array_dinamico.h"
+#include "array_dinamico.hpp"
 
 ArrayDinamico* criarDinamico(int capacidade) {
     ArrayDinamico* arr = new ArrayDinamico;
@@ -9,6 +9,14 @@ ArrayDinamico* criarDinamico(int capacidade) {
     arr->dados = new int[arr->capacidade];
 
     return arr;
+}
+
+bool contem(ArrayDinamico* arr, int elemento){
+    for(int i = 0; i < arr->tamanho; i++){
+        if(arr->dados[i] == elemento)
+            return true;
+    }
+    return false;
 }
 
 void aumentarCapacidade(ArrayDinamico* arr) {
@@ -26,6 +34,9 @@ void aumentarCapacidade(ArrayDinamico* arr) {
 }
 
 void adicionar(ArrayDinamico* arr, int elemento) {
+
+    if(contem(arr, elemento))
+        return;
 
     if(arr->tamanho == arr->capacidade) {
         aumentarCapacidade(arr);
@@ -49,4 +60,9 @@ void remover(ArrayDinamico* arr, int elemento) {
             return;
         }
     }
+}
+
+void destruir(ArrayDinamico* arr) {
+    delete[] arr->dados;
+    delete arr;
 }

@@ -1,4 +1,4 @@
-#include "Cliente.h"
+#include "Cliente.hpp"
 
 #include <iostream>
 
@@ -18,4 +18,17 @@ void comprarAcao(Cliente* c, int acao){
 
 void venderAcao(Cliente* c, int acao){
     remover(c->carteira, acao);
+}
+
+int getNumAcoesCliente(Cliente* c){
+    return c->carteira->tamanho;
+}
+
+int getAcaoCliente(Cliente* c, int i){
+    return c->carteira->dados[i];
+}
+
+void destruirCliente(Cliente* c){
+    destruir(c->carteira);
+    delete c;
 }

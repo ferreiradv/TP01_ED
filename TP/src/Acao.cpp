@@ -38,7 +38,7 @@ double Acao::calcularRET() const {
 
     if(countPrecos < 2) return 0;
 
-    int primeiro = indexAtual;
+    int primeiro = (countPrecos < w) ? 0 : indexAtual;
     int ultimo = (indexAtual - 1 + w) % w;
 
     double p0 = historicoPrecos[primeiro];
