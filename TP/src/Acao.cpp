@@ -112,20 +112,3 @@ double Acao::calcularCONS() const {
 
     return (double) positivos / (w - 1);
 }
-
-double Acao::getMetricValue(std::string metrica) const {
-
-    if(metrica == "RET")
-        return calcularRET();
-
-    if(metrica == "AVGRET")
-        return calcularAVGRET();
-
-    if(metrica == "STAB")
-        return calcularSTAB();
-
-    if(metrica == "CONS")
-        return calcularCONS();
-
-    return 0;
-}

@@ -28,8 +28,7 @@ public:
     double calcularAVGRET() const;
     double calcularSTAB() const;
     double calcularCONS() const;
-    
-    double getMetricValue(std::string metrica) const;
+
 
 };
 
