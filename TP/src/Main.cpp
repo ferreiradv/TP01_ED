@@ -60,7 +60,9 @@ void merge(ItemRanking** arr, int esq, int meio, int dir) {
     }
     }
 
-    double obterValorMetrica(Acao* a, string tipo) {
+    double obterValorMetrica(Acao* a, std::string tipo) {
+        if (a == nullptr) return 0;// seguranca 
+
     if (tipo == "RET") return a->calcularRET();
     if (tipo == "AVGRET") return a->calcularAVGRET();
     if (tipo == "STAB") return a->calcularSTAB();
@@ -83,6 +85,9 @@ int main(){
 
         if(input == 'M') {
             cin >> w;
+
+                string metrica;
+                getline(cin, metrica);
         }
 
         else if(input == 'A') {
@@ -169,7 +174,7 @@ int main(){
                 count++;
             }
         }
-
+        if(count > 0)
         mergeSort(temporario, 0, count - 1);
 
         for(int i = 0; i < count; i++){
@@ -185,7 +190,8 @@ int main(){
     }
 
     // FILTRAR CARTEIRA DO CLIENTE
-
+    if(clientes[cliente] == nullptr)
+    continue;
     int tamanhoCarteira = getNumAcoesCliente(clientes[cliente]);
 
     ItemRanking* rankingLocal = new ItemRanking[tamanhoCarteira];
@@ -201,7 +207,7 @@ int main(){
     for(int i = 0; i < tamanhoCarteira; i++){
         ponteiros[i] = &rankingLocal[i];
     }
-
+    if(tamanhoCarteira > 0)
     mergeSort(ponteiros, 0, tamanhoCarteira - 1);
 
     int limite = (n < tamanhoCarteira) ? n : tamanhoCarteira;
@@ -237,12 +243,10 @@ int main(){
 
 
     }
-    for(int i = 0; i < numAcoes; i++){
-        delete acoes[i];
-    }
-    for(int i = 0; i < numClientes; i++){
-        destruirCliente(clientes[i]);
-    }
+for(int i = 0; i < MAX; i++){
+    if(acoes != nullptr && acoes[i] != nullptr) delete acoes[i];
+    if(clientes != nullptr && clientes[i] != nullptr) destruirCliente(clientes[i]);
+}
     delete[] acoes;
     delete[] clientes;
 
