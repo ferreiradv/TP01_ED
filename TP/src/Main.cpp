@@ -21,8 +21,7 @@ int main(){
     while(cin >> input){//loop principal do main
 
         if(input == 'M') {
-            cin >> w;
-
+            cin >> w;//recebe o w (tamanho do buffer circular)
                 string metrica;
                 getline(cin, metrica);
         }
@@ -31,7 +30,8 @@ int main(){
 
             int id;
             cin >> id;
-
+            //podemos assumir que as ações serão inseridas em ordem crescente de id,
+            //então o id da próxima ação a ser inserida será igual ao número de ações já inseridas
             if(acoes == nullptr) {
                 acoes = new Acao*[MAX]; 
                 for(int i = 0; i < MAX; i++) {
