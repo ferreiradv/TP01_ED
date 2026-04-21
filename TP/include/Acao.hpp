@@ -2,7 +2,8 @@
 #define ACAO_HPP
 
 #include <string>
-
+//O TAD Ação possui um id unico e um historia de preços gerido por um buffer circular
+//nos metodos são calculados os valores das metricas pedidas no enunciado.
 class Acao {
 private:
     int id;

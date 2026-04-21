@@ -1,6 +1,7 @@
 #ifndef ARRAY_DINAMICO_H
 #define ARRAY_DINAMICO_H
-
+//a estrutura de array dinamico sera usada para gerenciar a carteira dos clientes, permitindo adicionar e remover ações
+//de forma eficiente e dinamica, otimizando o uso do memória e otimizado as operações
 struct ArrayDinamico {
     int* dados;
     int tamanho;

@@ -2,7 +2,8 @@
 #define CLIENTE_H
 
 #include "array_dinamico.hpp"
-
+//A estrutura cliente representa um cliente do sistema JOLAMBS, cada cliente contem um id unico e
+//uma carteira de ações 
 struct Cliente {
     int id;
     ArrayDinamico* carteira;
