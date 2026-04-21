@@ -60,7 +60,7 @@ int main(){
 
             int id;
             double preco;
-
+            //le a entrada de id e preco da ação, e adiciona o preço ao histórico da ação correspondente
             cin >> id >> preco;
 
             acoes[id]->adicionarPreco(preco);
@@ -69,71 +69,92 @@ int main(){
 
             int cliente, acao;
             cin >> cliente >> acao;
-
+            //usa o metodo nativo do TAD cliente para comprar a ação.
+            //adicionando a acao a carteira do cliente [array dinamico]
             comprarAcao(clientes[cliente], acao);
         }   
         else if(input == 'V') {
 
             int cliente, acao;
             cin >> cliente >> acao;
-
+             //usa o metodo nativo do TAD cliente para vender a ação.
+            //removendo a acao a carteira do cliente [array dinamico]
             venderAcao(clientes[cliente], acao);
         }
 
+
+        //funcao mais complexa do projeto
+        //responsavel por processar a consulta e gerar o ranking das ações da carteira do cliente
         else if(input == 'Q'){
+            //leitura dos parametros iniciais da consulta
     int idconsulta, cliente, n, nmetricas;
     cin >> idconsulta >> cliente >> n >> nmetricas; 
-
+            
+    //cria os vetores dinamicos da colsulta
+    //pois o numero de metricas/pesos varia a cada consulta
     string* metricas = new string[nmetricas];
     double* pesos = new double[nmetricas];
-
+    //leitura das metricas e pesos da consulta
     for(int i = 0; i < nmetricas; i++){
         cin >> metricas[i] >> pesos[i];
     }
+    //leitura de dados finalizada
 
-    Rankingaux* rankingglobal = new Rankingaux[MAX];
+//-----------------------------------------------
 
-    for(int i = 0; i < MAX; i++){
+    //inicio do processamento da consulta
+    Rankingaux* rankingglobal = new Rankingaux[MAX];//vetor com a pontuação de TODAS as acoes 
+
+    for(int i = 0; i < MAX; i++){//inicializa o vetor de ranking global
         rankingglobal[i].pontuacao = 0;
         rankingglobal[i].id = i;
     }
 
     for(int m = 0; m < nmetricas; m++){
+        //para cada metrica da consulta, 
+        //é gerado um ranking global de todas as ações, ordenado pelo valor da metrica
 
-        ItemRanking** temporario = new ItemRanking*[numAcoes];
-        int count = 0;
+        ItemRanking** temporario = new ItemRanking*[numAcoes];//vetor auxiliar para o ranking temporario de cada metrica
+        int count = 0;//conta quantas ações existem para a metrica, para saber o tamanho do vetor temporario
 
-        for(int i = 0; i < MAX; i++){
+        for(int i = 0; i < MAX; i++){//percorre todas as acoes existentes
             if(acoes[i] != nullptr){
                 temporario[count] = new ItemRanking;
                 temporario[count]->id = i;
                 temporario[count]->valor = obterValorMetrica(acoes[i], metricas[m]);
                 count++;
+                //calcula o valor da metrica para a ação e armazena no vetor temporario, junto com o id da ação
+                //conta ações
             }
         }
         if(count > 0)
-        mergeSort(temporario, 0, count - 1);
+        mergeSort(temporario, 0, count - 1);//ordena as ações pela metrica usando o merge sort
 
+
+        //calculo de pontuação
+        //apos o ranking global ser gerado e ordenado
+        //é calculada a pontuação de [count - i], como pedido no enunciado
+        //e multiplicada pelo peso e soma
         for(int i = 0; i < count; i++){
             int idDaAcao = temporario[i]->id;
             double pontosGanhos = (count - i);
             rankingglobal[idDaAcao].pontuacao += pontosGanhos * pesos[m];
         }
 
-        for(int i = 0; i < count; i++)
+        for(int i = 0; i < count; i++)//libera memoria
             delete temporario[i];
 
         delete[] temporario;
     }
 
     // FILTRAR CARTEIRA DO CLIENTE
-    if(clientes[cliente] == nullptr)
+    if(clientes[cliente] == nullptr)//se o cliente da consulta não existe, ignora a consulta e continua o loop
     continue;
-    int tamanhoCarteira = getNumAcoesCliente(clientes[cliente]);
+    int tamanhoCarteira = getNumAcoesCliente(clientes[cliente]);//pega o numero de açoes do clinete
 
-    ItemRanking* rankingLocal = new ItemRanking[tamanhoCarteira];
+    ItemRanking* rankingLocal = new ItemRanking[tamanhoCarteira];//cria o vetor para ranking local
 
-    for(int i = 0; i < tamanhoCarteira; i++){
+    for(int i = 0; i < tamanhoCarteira; i++){//filtragem das açoes do cliente, e consulta na pontuação do ranking global
         int idAcao = getAcaoCliente(clientes[cliente], i);
         rankingLocal[i].id = idAcao;
         rankingLocal[i].valor = rankingglobal[idAcao].pontuacao;
