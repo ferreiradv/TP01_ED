@@ -21,7 +21,7 @@ public:
     int getId() const;
     int getW() const;
 
-    // Métodos de negócio
+    
     void adicionarPreco(double preco); 
     
     

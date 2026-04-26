@@ -7,6 +7,25 @@
 #include <chrono>
 #define MAX 1000
 
+ItemRanking** rankingRET = new ItemRanking*[MAX];
+ItemRanking** rankingAVGRET = new ItemRanking*[MAX];
+ItemRanking** rankingSTAB = new ItemRanking*[MAX];
+ItemRanking** rankingCONS = new ItemRanking*[MAX];
+
+void inserirOrdenado(ItemRanking** ranking, int& tamanho, int id, double valor) {
+    int i = tamanho - 1;
+
+    while (i >= 0 && ranking[i]->valor < valor) {
+        ranking[i + 1] = ranking[i];
+        i--;
+    }
+
+    ranking[i + 1] = new ItemRanking{id, valor};
+    tamanho++;
+}
+
+int tamRET = 0, tamAVGRET = 0, tamSTAB = 0, tamCONS = 0;
+
 using namespace std;
 int main(){
     int w;
@@ -42,6 +61,16 @@ int main(){
 
             acoes[id] = new Acao(id, w);
             numAcoes++;
+            // calcula todas as métricas UMA VEZ
+            double ret = acoes[id]->calcularRET();
+            double avgret = acoes[id]->calcularAVGRET();
+            double stab = acoes[id]->calcularSTAB();
+            double cons = acoes[id]->calcularCONS();
+            // insere em cada ranking
+            inserirOrdenado(rankingRET, tamRET, id, ret);
+            inserirOrdenado(rankingAVGRET, tamAVGRET, id, avgret);
+            inserirOrdenado(rankingSTAB, tamSTAB, id, stab);
+            inserirOrdenado(rankingCONS, tamCONS, id, cons);
         }
         else if(input == 'U'){
             int id;
@@ -85,7 +114,7 @@ int main(){
 
         //funcao mais complexa do projeto
 else if(input == 'Q'){
-    auto inicio1 = std::chrono::high_resolution_clock::now();
+
     int idconsulta, cliente, n, nmetricas;
     cin >> idconsulta >> cliente >> n >> nmetricas; 
 
@@ -96,55 +125,7 @@ else if(input == 'Q'){
         cin >> metricas[i] >> pesos[i];
     }
 
-//-----------------------------------------------
-
-    // ranking global
-    Rankingaux* rankingglobal = new Rankingaux[MAX];
-
-    for(int i = 0; i < MAX; i++){
-        rankingglobal[i].pontuacao = 0;
-        rankingglobal[i].id = i;
-    }
-
-   //vetor aux para ordenação
-    ItemRanking** temporario = new ItemRanking*[numAcoes];
-
-    for(int m = 0; m < nmetricas; m++){
-
-        int count = 0;
-
-        
-        for(int i = 0; i < numAcoes; i++){
-            if(acoes[i] != nullptr){
-                temporario[count] = new ItemRanking;
-                temporario[count]->id = i;
-                temporario[count]->valor = obterValorMetrica(acoes[i], metricas[m]);
-                count++;
-            }
-        }
-
-        if(count > 0)
-            mergeSort(temporario, 0, count - 1);
-
-        // cálculo da pontuação
-        for(int i = 0; i < count; i++){
-            int idDaAcao = temporario[i]->id;
-            double pontosGanhos = (count - i);
-            rankingglobal[idDaAcao].pontuacao += pontosGanhos * pesos[m];
-        }
-
-    //limpeza do vetor temporário
-        for(int i = 0; i < count; i++){
-            delete temporario[i];
-        }
-    }
-
-    delete[] temporario;
-
-//-----------------------------------------------
-
     if(clientes[cliente] == nullptr){
-        delete[] rankingglobal;
         delete[] metricas;
         delete[] pesos;
         continue;
@@ -154,12 +135,52 @@ else if(input == 'Q'){
 
     ItemRanking* rankingLocal = new ItemRanking[tamanhoCarteira];
 
+    // inicializa
     for(int i = 0; i < tamanhoCarteira; i++){
         int idAcao = getAcaoCliente(clientes[cliente], i);
         rankingLocal[i].id = idAcao;
-        rankingLocal[i].valor = rankingglobal[idAcao].pontuacao;
+        rankingLocal[i].valor = 0;
     }
 
+    // 🔹 para cada métrica, usar ranking já pronto
+    for(int m = 0; m < nmetricas; m++){
+
+        ItemRanking** rankingAtual = nullptr;
+        int tamanhoRanking = 0;
+
+        if(metricas[m] == "RET"){
+            rankingAtual = rankingRET;
+            tamanhoRanking = tamRET;
+        }
+        else if(metricas[m] == "AVGRET"){
+            rankingAtual = rankingAVGRET;
+            tamanhoRanking = tamAVGRET;
+        }
+        else if(metricas[m] == "STAB"){
+            rankingAtual = rankingSTAB;
+            tamanhoRanking = tamSTAB;
+        }
+        else if(metricas[m] == "CONS"){
+            rankingAtual = rankingCONS;
+            tamanhoRanking = tamCONS;
+        }
+
+        // percorre ranking global já ordenado
+        for(int i = 0; i < tamanhoRanking; i++){
+            int idAcao = rankingAtual[i]->id;
+            double pontos = (tamanhoRanking - i) * pesos[m];
+
+            // verifica se pertence ao cliente
+            for(int j = 0; j < tamanhoCarteira; j++){
+                if(rankingLocal[j].id == idAcao){
+                    rankingLocal[j].valor += pontos;
+                    break;
+                }
+            }
+        }
+    }
+
+    // ordenar ranking local
     ItemRanking** ponteiros = new ItemRanking*[tamanhoCarteira];
 
     for(int i = 0; i < tamanhoCarteira; i++){
@@ -168,8 +189,6 @@ else if(input == 'Q'){
 
     if(tamanhoCarteira > 0)
         mergeSort(ponteiros, 0, tamanhoCarteira - 1);
-
-//-----------------------------------------------
 
     int limite = (n < tamanhoCarteira) ? n : tamanhoCarteira;
 
@@ -195,16 +214,10 @@ else if(input == 'Q'){
              << ponteiros[pos]->valor << endl;
     }
 
-//-----------------------------------------------
-
     delete[] rankingLocal;
     delete[] ponteiros;
-    delete[] rankingglobal;
     delete[] metricas;
     delete[] pesos;
-    auto fim1 = std::chrono::high_resolution_clock::now();
-    double tempo1 = std::chrono::duration<double, std::milli>(fim1 - inicio1).count();
-    cout << "Tempo gasto na consulta " << idconsulta << ": " << tempo1 << " ms" << endl;
 }
 
     }
