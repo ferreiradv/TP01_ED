@@ -28,6 +28,7 @@ int tamRET = 0, tamAVGRET = 0, tamSTAB = 0, tamCONS = 0;
 
 using namespace std;
 int main(){
+    auto start = std::chrono::high_resolution_clock::now();
     int w;
     char input;//recebera o primeiro caractere da linha
 
@@ -114,7 +115,7 @@ int main(){
 
         //funcao mais complexa do projeto
 else if(input == 'Q'){
-
+    
     int idconsulta, cliente, n, nmetricas;
     cin >> idconsulta >> cliente >> n >> nmetricas; 
 
@@ -218,6 +219,7 @@ else if(input == 'Q'){
     delete[] ponteiros;
     delete[] metricas;
     delete[] pesos;
+
 }
 
     }
@@ -227,6 +229,8 @@ for(int i = 0; i < MAX; i++){
 }
     delete[] acoes;
     delete[] clientes;
-
+    auto end = std::chrono::high_resolution_clock::now();
+     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+      std::cout << "Tempo de execucao alg 2: " << duration.count() << " microssegundos" << std::endl;
     return 0;
 }
